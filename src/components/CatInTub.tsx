@@ -1,10 +1,15 @@
 
 import React, { useState, useEffect } from 'react';
+import { Button } from '@/components/ui/button';
+import { Trophy } from 'lucide-react';
+import Leaderboard from './Leaderboard';
 
 const CatInTub = () => {
   const [seconds, setSeconds] = useState(0);
   const [startTime] = useState(Date.now());
   const [mousePosition, setMousePosition] = useState({ x: 50, y: 50 });
+  const [showLeaderboard, setShowLeaderboard] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -40,27 +45,32 @@ const CatInTub = () => {
   };
 
   const getRankingMessage = (totalSeconds: number) => {
-    if (totalSeconds < 30) {
+    if (totalSeconds < 60) {
       return "The cat senses a new presence...";
-    } else if (totalSeconds < 120) {
-      return "The cat acknowledges your existence";
     } else if (totalSeconds < 300) {
+      return "The cat acknowledges your existence";
+    } else if (totalSeconds < 900) {
       return "The cat finds your dedication... acceptable";
-    } else if (totalSeconds < 600) {
-      return "The cat begins to appreciate your devotion";
-    } else if (totalSeconds < 1200) {
-      return "The cat grants you the title of 'Casual Observer'";
     } else if (totalSeconds < 1800) {
-      return "The cat deems you a 'Faithful Watcher'";
+      return "The cat begins to appreciate your devotion";
     } else if (totalSeconds < 3600) {
-      return "The cat honors you as a 'Devoted Guardian'";
+      return "The cat grants you the title of 'Casual Observer'";
     } else if (totalSeconds < 7200) {
-      return "The cat bestows upon you 'Sacred Protector' status";
+      return "The cat deems you a 'Faithful Watcher'";
     } else if (totalSeconds < 14400) {
+      return "The cat honors you as a 'Devoted Guardian'";
+    } else if (totalSeconds < 28800) {
+      return "The cat bestows upon you 'Sacred Protector' status";
+    } else if (totalSeconds < 57600) {
       return "The cat recognizes you as 'Ancient Keeper of the Tub'";
     } else {
       return "You have achieved ultimate enlightenment: 'Eternal Servant of the Bathing Feline'";
     }
+  };
+
+  const handleRecord = () => {
+    setIsRecording(true);
+    setShowLeaderboard(true);
   };
 
   return (
@@ -74,12 +84,22 @@ const CatInTub = () => {
         </div>
       </div>
 
-      {/* Main cat image - full screen */}
+      {/* Leaderboard button */}
+      <Button
+        onClick={() => setShowLeaderboard(true)}
+        className="absolute top-4 right-4 z-20 bg-amber-800/80 hover:bg-amber-700 text-white backdrop-blur-sm border border-amber-600/50"
+        size="sm"
+      >
+        <Trophy className="w-4 h-4 mr-2" />
+        Leaderboard
+      </Button>
+
+      {/* Main cat image - full screen with enhanced mouse tracking */}
       <div className="relative w-full h-screen">
         <div 
-          className="absolute inset-0 transition-transform duration-1000 ease-out"
+          className="absolute inset-0 transition-transform duration-300 ease-out"
           style={{
-            transform: `translate(${(mousePosition.x - 50) * 0.02}px, ${(mousePosition.y - 50) * 0.02}px)`
+            transform: `translate(${(mousePosition.x - 50) * 0.05}px, ${(mousePosition.y - 50) * 0.05}px) scale(1.02)`
           }}
         >
           <img 
@@ -109,20 +129,34 @@ const CatInTub = () => {
           </p>
         </div>
 
-        {/* Timer overlay - bottom center */}
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 w-full max-w-lg px-4 z-10">
-          <div className="bg-white/90 backdrop-blur-md rounded-2xl p-6 shadow-2xl border border-amber-200/50">
-            <h2 className="text-xl md:text-2xl font-semibold text-amber-900 mb-3 text-center">
-              Time Honoring the Sacred Cat
-            </h2>
+        {/* Compact timer overlay with glass effect */}
+        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10">
+          <div className="bg-white/20 backdrop-blur-md rounded-xl p-4 shadow-2xl border border-white/30 relative overflow-hidden max-w-sm">
+            {/* Animated border effect */}
+            <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-cyan-400/30 via-purple-400/30 to-pink-400/30 animate-pulse"></div>
+            <div className="absolute inset-[1px] rounded-xl bg-white/20 backdrop-blur-md"></div>
             
-            <div className="text-3xl md:text-5xl font-mono font-bold text-amber-900 mb-3 tracking-wider text-center">
-              {formatTime(seconds)}
+            <div className="relative z-10">
+              <h2 className="text-lg font-semibold text-amber-900 mb-2 text-center">
+                Honoring Time
+              </h2>
+              
+              <div className="text-2xl md:text-3xl font-mono font-bold text-amber-900 mb-2 tracking-wider text-center">
+                {formatTime(seconds)}
+              </div>
+              
+              <p className="text-amber-800 text-sm font-light text-center leading-relaxed mb-3">
+                {getRankingMessage(seconds)}
+              </p>
+
+              <Button
+                onClick={handleRecord}
+                className="w-full bg-amber-700/80 hover:bg-amber-600 text-white text-sm"
+                size="sm"
+              >
+                Record Run
+              </Button>
             </div>
-            
-            <p className="text-amber-700 text-base font-light text-center leading-relaxed">
-              {getRankingMessage(seconds)}
-            </p>
           </div>
         </div>
 
@@ -132,6 +166,20 @@ const CatInTub = () => {
           <div className="absolute bottom-2 right-1/3 w-16 h-2 bg-blue-200/50 rounded-full animate-pulse delay-700"></div>
         </div>
       </div>
+
+      {/* Leaderboard Modal */}
+      {showLeaderboard && (
+        <Leaderboard
+          isOpen={showLeaderboard}
+          onClose={() => {
+            setShowLeaderboard(false);
+            setIsRecording(false);
+          }}
+          currentTime={seconds}
+          isRecording={isRecording}
+          onRecordComplete={() => setIsRecording(false)}
+        />
+      )}
     </div>
   );
 };
