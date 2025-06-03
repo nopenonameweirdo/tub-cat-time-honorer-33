@@ -182,12 +182,6 @@ const CatInTub = () => {
               }}>
             Cat in a Tub
           </h1>
-          <p className="text-lg md:text-xl text-white font-light"
-             style={{
-               textShadow: '1px 1px 0px #000, -1px -1px 0px #000, 1px -1px 0px #000, -1px 1px 0px #000'
-             }}>
-            Start Honoring
-          </p>
         </div>
 
         {/* Clean timer without background - white text with black outline */}
