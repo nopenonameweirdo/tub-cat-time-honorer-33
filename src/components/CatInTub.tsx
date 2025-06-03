@@ -94,25 +94,25 @@ const CatInTub = () => {
 
   const getRankingMessage = (totalSeconds: number) => {
     if (totalSeconds < 300) {
-      return "The cat senses a new presence...";
+      return "The cat notices you watching...";
     } else if (totalSeconds < 1800) {
-      return "The cat acknowledges your existence";
+      return "You're gaining the cat's attention";
     } else if (totalSeconds < 3600) {
-      return "The cat finds your dedication... acceptable";
+      return "The cat seems comfortable with you";
     } else if (totalSeconds < 7200) {
-      return "The cat begins to appreciate your devotion";
+      return "You're becoming a trusted presence";
     } else if (totalSeconds < 14400) {
-      return "The cat grants you the title of 'Casual Observer'";
+      return "The cat considers you a friend";
     } else if (totalSeconds < 28800) {
-      return "The cat deems you a 'Faithful Watcher'";
+      return "You're now a devoted companion";
     } else if (totalSeconds < 57600) {
-      return "The cat honors you as a 'Devoted Guardian'";
+      return "The cat truly trusts you";
     } else if (totalSeconds < 115200) {
-      return "The cat bestows upon you 'Sacred Protector' status";
+      return "You've become the cat's guardian";
     } else if (totalSeconds < 230400) {
-      return "The cat recognizes you as 'Ancient Keeper of the Tub'";
+      return "A bond beyond words has formed";
     } else {
-      return "You have achieved ultimate enlightenment: 'Eternal Servant of the Bathing Feline'";
+      return "You and the cat share an eternal connection";
     }
   };
 
@@ -123,12 +123,12 @@ const CatInTub = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-100 via-cyan-50 to-blue-200 relative overflow-hidden">
-      {/* Enhanced bathroom tiles background */}
-      <div className="absolute inset-0 opacity-5">
-        <div className="grid grid-cols-24 grid-rows-24 w-full h-full">
-          {Array.from({ length: 576 }).map((_, i) => (
-            <div key={i} className="border border-blue-300 bg-white/20"></div>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-slate-100 to-blue-100 relative overflow-hidden">
+      {/* Subtle texture overlay */}
+      <div className="absolute inset-0 opacity-[0.02]">
+        <div className="grid grid-cols-20 grid-rows-20 w-full h-full">
+          {Array.from({ length: 400 }).map((_, i) => (
+            <div key={i} className="border border-slate-200"></div>
           ))}
         </div>
       </div>
@@ -136,87 +136,81 @@ const CatInTub = () => {
       {/* Leaderboard button */}
       <Button
         onClick={() => setShowLeaderboard(true)}
-        className="absolute top-6 right-6 z-20 bg-cyan-800/90 hover:bg-cyan-700 text-white backdrop-blur-md border border-cyan-400/30 shadow-2xl"
+        className="absolute top-6 right-6 z-20 bg-white/80 hover:bg-white/90 text-slate-700 backdrop-blur-md border border-slate-200 shadow-lg"
         size="lg"
       >
         <Trophy className="w-5 h-5 mr-2" />
         Leaderboard
       </Button>
 
-      {/* Enhanced full screen cat image with better mouse tracking */}
+      {/* Cat image with parallax effect */}
       <div className="relative w-full h-screen overflow-hidden">
         <div 
-          className="absolute inset-0 transition-transform duration-700 ease-out"
+          className="absolute inset-0 transition-transform duration-1000 ease-out"
           style={{
-            transform: `translate(${(mousePosition.x - 50) * 0.25}px, ${(mousePosition.y - 50) * 0.25}px) scale(1.08)`,
+            transform: `translate(${(mousePosition.x - 50) * 0.15}px, ${(mousePosition.y - 50) * 0.15}px) scale(1.05)`,
             transformOrigin: 'center center'
           }}
         >
           <img 
             src="https://www.rover.com/blog/wp-content/uploads/iStock-154918525-min-960x540.jpg"
-            alt="A serene cat enjoying a peaceful moment in a bathtub"
-            className="w-full h-full object-cover filter brightness-110 contrast-105"
+            alt="A peaceful cat in a bathtub"
+            className="w-full h-full object-cover brightness-105 contrast-110"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-cyan-900/30 via-transparent to-blue-200/20"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-900/20 via-transparent to-transparent"></div>
         </div>
 
-        {/* Floating water bubbles */}
+        {/* Floating elements */}
         <div className="absolute inset-0 pointer-events-none">
-          {Array.from({ length: 8 }).map((_, i) => (
+          {Array.from({ length: 6 }).map((_, i) => (
             <div
               key={i}
-              className={`absolute w-3 h-3 bg-cyan-100/60 rounded-full animate-bounce shadow-lg`}
+              className={`absolute w-2 h-2 bg-white/40 rounded-full animate-bounce`}
               style={{
-                top: `${20 + (i * 10)}%`,
-                left: `${15 + (i * 8)}%`,
-                animationDelay: `${i * 0.2}s`,
-                animationDuration: `${2 + (i * 0.3)}s`
+                top: `${25 + (i * 12)}%`,
+                left: `${20 + (i * 10)}%`,
+                animationDelay: `${i * 0.3}s`,
+                animationDuration: `${2.5 + (i * 0.4)}s`
               }}
             ></div>
           ))}
         </div>
 
-        {/* Title overlay */}
-        <div className="absolute top-12 left-1/2 transform -translate-x-1/2 text-center z-10">
-          <h1 className="text-5xl md:text-7xl font-bold text-cyan-900 mb-4 tracking-tight drop-shadow-2xl">
+        {/* Title */}
+        <div className="absolute top-16 left-1/2 transform -translate-x-1/2 text-center z-10">
+          <h1 className="text-5xl md:text-6xl font-light text-slate-800 mb-3 tracking-wide">
             Cat in a Tub
           </h1>
-          <p className="text-xl md:text-2xl text-cyan-800 font-light drop-shadow-lg">
-            A sacred moment of feline tranquility
+          <p className="text-lg md:text-xl text-slate-600 font-light">
+            A moment of pure tranquility
           </p>
         </div>
 
-        {/* Compact timer with translucent background */}
-        <div className="absolute bottom-16 left-1/2 transform -translate-x-1/2 z-10">
-          <div className="bg-cyan-900/20 backdrop-blur-md border border-cyan-300/40 rounded-2xl p-6 shadow-2xl">
-            <div className="text-center">
-              <h2 className="text-sm font-medium text-cyan-800 mb-2 drop-shadow-sm">
-                Honoring Time
-              </h2>
-              
-              <div className="text-6xl md:text-7xl font-mono font-bold text-cyan-900 mb-3 tracking-wider drop-shadow-lg">
-                {seconds}s
-              </div>
-              
-              <p className="text-cyan-700 text-sm font-medium drop-shadow-sm max-w-md mx-auto">
-                {getRankingMessage(seconds)}
-              </p>
+        {/* Clean timer without background */}
+        <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 z-10">
+          <div className="text-center">
+            <div className="text-6xl md:text-7xl font-light text-slate-800 mb-4 tracking-wider">
+              {Math.floor(seconds / 60)}:{(seconds % 60).toString().padStart(2, '0')}
             </div>
+            
+            <p className="text-slate-600 text-base font-light max-w-md mx-auto">
+              {getRankingMessage(seconds)}
+            </p>
           </div>
         </div>
 
-        {/* Water ripple effects */}
-        <div className="absolute bottom-0 left-0 w-full h-40 bg-gradient-to-t from-cyan-300/40 to-transparent pointer-events-none">
-          {Array.from({ length: 5 }).map((_, i) => (
+        {/* Subtle water effect */}
+        <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-blue-200/30 to-transparent pointer-events-none">
+          {Array.from({ length: 3 }).map((_, i) => (
             <div
               key={i}
-              className={`absolute bottom-0 bg-cyan-200/50 rounded-full animate-pulse`}
+              className={`absolute bottom-0 bg-blue-300/20 rounded-full animate-pulse`}
               style={{
-                left: `${10 + (i * 20)}%`,
-                width: `${60 + (i * 10)}px`,
-                height: `${8 + (i * 2)}px`,
-                animationDelay: `${i * 0.4}s`,
-                animationDuration: `${3 + (i * 0.5)}s`
+                left: `${15 + (i * 30)}%`,
+                width: `${40 + (i * 15)}px`,
+                height: `${6 + (i * 2)}px`,
+                animationDelay: `${i * 0.6}s`,
+                animationDuration: `${4 + (i * 0.8)}s`
               }}
             ></div>
           ))}
