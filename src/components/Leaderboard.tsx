@@ -33,15 +33,15 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
   useEffect(() => {
     if (isOpen) {
       loadEntries();
-      // Simulate live updates every 3 seconds
-      const interval = setInterval(loadEntries, 3000);
+      // Simulate live updates every 2 seconds for better real-time feel
+      const interval = setInterval(loadEntries, 2000);
       return () => clearInterval(interval);
     }
   }, [isOpen]);
 
   const loadEntries = () => {
-    // Simulate network connection with 95% uptime
-    setIsConnected(Math.random() > 0.05);
+    // Simulate network connection with 98% uptime
+    setIsConnected(Math.random() > 0.02);
     
     const savedEntries = localStorage.getItem('catInTubLeaderboard');
     if (savedEntries) {
@@ -51,17 +51,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
   };
 
   const formatTime = (totalSeconds: number) => {
-    const hours = Math.floor(totalSeconds / 3600);
-    const minutes = Math.floor((totalSeconds % 3600) / 60);
-    const secs = totalSeconds % 60;
-
-    if (hours > 0) {
-      return `${hours}h ${minutes}m ${secs}s`;
-    } else if (minutes > 0) {
-      return `${minutes}m ${secs}s`;
-    } else {
-      return `${secs}s`;
-    }
+    return `${totalSeconds}s`;
   };
 
   const getRankIcon = (index: number) => {
@@ -102,7 +92,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
           <DialogTitle className="text-2xl font-bold text-cyan-900 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <Trophy className="w-6 h-6" />
-              Global Leaderboard
+              Global Honoring Leaderboard
             </div>
             <div className="flex items-center gap-2 text-sm">
               <Wifi className={`w-4 h-4 ${isConnected ? 'text-green-500' : 'text-red-500'}`} />
@@ -118,7 +108,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
           <div className="mb-4 p-4 bg-gradient-to-r from-cyan-100/80 to-blue-100/80 rounded-xl border border-cyan-300/50">
             <h3 className="font-semibold text-cyan-900 mb-2 flex items-center gap-2">
               <Users className="w-4 h-4" />
-              Your Stats
+              Your Honoring Stats
             </h3>
             <div className="grid grid-cols-3 gap-4 text-center">
               <div>
@@ -131,7 +121,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
               </div>
               <div>
                 <p className="text-xl font-bold text-cyan-800">{entries.length}</p>
-                <p className="text-xs text-cyan-600">Total Players</p>
+                <p className="text-xs text-cyan-600">Total Honorers</p>
               </div>
             </div>
           </div>
@@ -143,7 +133,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
             <div className="relative flex-1 max-w-xs">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-cyan-500 w-4 h-4" />
               <Input
-                placeholder="Search players..."
+                placeholder="Search honorers..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-10 border-cyan-200 focus:border-cyan-400"
@@ -164,8 +154,8 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
           {entries.length === 0 ? (
             <div className="text-center py-8 text-cyan-700">
               <Trophy className="w-12 h-12 mx-auto mb-4 opacity-50" />
-              <p className="text-lg">No players recorded yet.</p>
-              <p className="text-sm opacity-75">Start watching to become the first!</p>
+              <p className="text-lg">No honorers recorded yet.</p>
+              <p className="text-sm opacity-75">Start honoring to become the first!</p>
             </div>
           ) : (
             <>
@@ -174,8 +164,8 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
                   <TableHeader>
                     <TableRow className="bg-gradient-to-r from-cyan-200/80 to-blue-200/80">
                       <TableHead className="w-16 text-center font-bold text-cyan-900">Rank</TableHead>
-                      <TableHead className="font-bold text-cyan-900">Player</TableHead>
-                      <TableHead className="font-bold text-cyan-900">Time</TableHead>
+                      <TableHead className="font-bold text-cyan-900">Honorer</TableHead>
+                      <TableHead className="font-bold text-cyan-900">Time (Seconds)</TableHead>
                       <TableHead className="font-bold text-cyan-900">Date</TableHead>
                     </TableRow>
                   </TableHeader>
@@ -238,8 +228,8 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
         </div>
 
         <div className="text-center text-xs text-cyan-600 mt-4 p-3 bg-cyan-50/50 rounded-lg">
-          <p className="font-medium">🐱 Live multiplayer cat watching leaderboard 🐱</p>
-          <p className="text-xs mt-1 opacity-75">Auto-saves every 10s • Live updates every 3s • Showing up to 1000 players</p>
+          <p className="font-medium">🐱 Live multiplayer cat honoring leaderboard 🐱</p>
+          <p className="text-xs mt-1 opacity-75">Auto-saves every 5s • Live updates every 2s • Showing up to 1000 honorers</p>
         </div>
       </DialogContent>
     </Dialog>
