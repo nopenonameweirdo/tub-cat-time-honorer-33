@@ -21,41 +21,35 @@ const UsernameModal: React.FC<UsernameModalProps> = ({ isOpen, onSubmit }) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={() => {}}>
-      <DialogContent className="max-w-md bg-cyan-50/95 backdrop-blur-md border border-cyan-200 shadow-2xl">
+      <DialogContent className="max-w-sm bg-white/95 backdrop-blur-xl border border-cyan-200/50 shadow-2xl rounded-2xl">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-bold text-cyan-900 flex items-center gap-2 justify-center">
-            <User className="w-6 h-6" />
-            Welcome to Cat in a Tub
+          <DialogTitle className="text-xl font-semibold text-cyan-900 flex items-center gap-2 justify-center">
+            <User className="w-5 h-5" />
+            Enter Name
           </DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-4 p-4">
-          <p className="text-cyan-800 text-center">
-            Enter your username to begin honoring the sacred cat and join the leaderboard:
-          </p>
+        <div className="space-y-4 p-2">
+          <Input
+            type="text"
+            placeholder="Your username..."
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            onKeyPress={(e) => e.key === 'Enter' && handleSubmit()}
+            className="text-center border-cyan-200 focus:border-cyan-400 bg-white/80"
+            maxLength={20}
+          />
           
-          <div className="space-y-3">
-            <Input
-              type="text"
-              placeholder="Enter your username..."
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && handleSubmit()}
-              className="text-center text-lg border-cyan-300 focus:border-cyan-500"
-              maxLength={20}
-            />
-            
-            <Button 
-              onClick={handleSubmit}
-              disabled={!username.trim()}
-              className="w-full bg-cyan-700 hover:bg-cyan-600 text-white text-lg py-3"
-            >
-              Begin Sacred Watch
-            </Button>
-          </div>
+          <Button 
+            onClick={handleSubmit}
+            disabled={!username.trim()}
+            className="w-full bg-cyan-700 hover:bg-cyan-600 text-white"
+          >
+            Start Watching
+          </Button>
 
-          <p className="text-xs text-cyan-600 text-center">
-            Your progress will be automatically saved every 10 seconds
+          <p className="text-xs text-cyan-600 text-center opacity-75">
+            Auto-saves every 10 seconds
           </p>
         </div>
       </DialogContent>

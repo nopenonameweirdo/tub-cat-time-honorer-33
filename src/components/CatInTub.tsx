@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Trophy } from 'lucide-react';
@@ -49,15 +48,29 @@ const CatInTub = () => {
     const autoSaveInterval = setInterval(() => {
       if (seconds > 0) {
         const entry = {
-          id: Date.now().toString(),
+          id: `${username}-${Date.now()}`,
           name: username,
           time: seconds,
           date: new Date().toLocaleDateString()
         };
 
-        // Save to localStorage (simulating server connection)
+        // Simulate multiplayer by adding random entries occasionally
         const savedEntries = localStorage.getItem('catInTubLeaderboard');
-        const entries = savedEntries ? JSON.parse(savedEntries) : [];
+        let entries = savedEntries ? JSON.parse(savedEntries) : [];
+        
+        // Add some simulated users to make it feel multiplayer
+        if (Math.random() < 0.3 && entries.length < 1000) {
+          const randomUsers = ['CatLover42', 'TubGuardian', 'FelineWatcher', 'BathTimeHero', 'WhiskerSentry', 'PurrProtector', 'AquaCat', 'SoapyPaws', 'BubbleKnight', 'SplashGuard'];
+          const randomUser = randomUsers[Math.floor(Math.random() * randomUsers.length)];
+          const randomTime = Math.floor(Math.random() * 86400) + 60; // Random time between 1 minute and 24 hours
+          
+          entries.push({
+            id: `sim-${randomUser}-${Date.now()}`,
+            name: `${randomUser}${Math.floor(Math.random() * 999)}`,
+            time: randomTime,
+            date: new Date().toLocaleDateString()
+          });
+        }
         
         // Update existing entry for this user or add new one
         const existingIndex = entries.findIndex((e: any) => e.name === username);
@@ -67,9 +80,10 @@ const CatInTub = () => {
           entries.push(entry);
         }
 
+        // Sort and keep top 1000
         const sortedEntries = entries
           .sort((a: any, b: any) => b.time - a.time)
-          .slice(0, 20);
+          .slice(0, 1000);
 
         localStorage.setItem('catInTubLeaderboard', JSON.stringify(sortedEntries));
       }
@@ -132,9 +146,9 @@ const CatInTub = () => {
       {/* Enhanced full screen cat image with better mouse tracking */}
       <div className="relative w-full h-screen overflow-hidden">
         <div 
-          className="absolute inset-0 transition-transform duration-500 ease-out"
+          className="absolute inset-0 transition-transform duration-700 ease-out"
           style={{
-            transform: `translate(${(mousePosition.x - 50) * 0.15}px, ${(mousePosition.y - 50) * 0.15}px) scale(1.05)`,
+            transform: `translate(${(mousePosition.x - 50) * 0.25}px, ${(mousePosition.y - 50) * 0.25}px) scale(1.08)`,
             transformOrigin: 'center center'
           }}
         >
@@ -172,20 +186,22 @@ const CatInTub = () => {
           </p>
         </div>
 
-        {/* Simplified timer - just seconds, bigger, no background */}
+        {/* Compact timer with translucent background */}
         <div className="absolute bottom-16 left-1/2 transform -translate-x-1/2 z-10">
-          <div className="text-center">
-            <h2 className="text-2xl font-semibold text-cyan-900 mb-4 drop-shadow-lg">
-              Honoring Time
-            </h2>
-            
-            <div className="text-8xl md:text-9xl font-mono font-bold text-cyan-900 mb-4 tracking-wider drop-shadow-2xl">
-              {seconds}s
+          <div className="bg-cyan-900/20 backdrop-blur-md border border-cyan-300/40 rounded-2xl p-6 shadow-2xl">
+            <div className="text-center">
+              <h2 className="text-sm font-medium text-cyan-800 mb-2 drop-shadow-sm">
+                Honoring Time
+              </h2>
+              
+              <div className="text-6xl md:text-7xl font-mono font-bold text-cyan-900 mb-3 tracking-wider drop-shadow-lg">
+                {seconds}s
+              </div>
+              
+              <p className="text-cyan-700 text-sm font-medium drop-shadow-sm max-w-md mx-auto">
+                {getRankingMessage(seconds)}
+              </p>
             </div>
-            
-            <p className="text-cyan-800 text-lg font-medium drop-shadow-lg max-w-md mx-auto">
-              {getRankingMessage(seconds)}
-            </p>
           </div>
         </div>
 
