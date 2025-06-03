@@ -41,7 +41,7 @@ const CatInTub = () => {
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
 
-  // Auto-save every 5 seconds if username exists and user has been honoring for at least 1 second
+  // Enhanced auto-save to shared global leaderboard every 5 seconds
   useEffect(() => {
     if (!username || seconds === 0) return;
 
@@ -53,23 +53,9 @@ const CatInTub = () => {
         date: new Date().toLocaleDateString()
       };
 
-      // Get existing entries
-      const savedEntries = localStorage.getItem('catInTubLeaderboard');
+      // Get existing entries from global shared storage
+      const savedEntries = localStorage.getItem('globalCatInTubLeaderboard');
       let entries = savedEntries ? JSON.parse(savedEntries) : [];
-      
-      // Add some simulated users to make it feel multiplayer
-      if (Math.random() < 0.2 && entries.length < 1000) {
-        const randomUsers = ['CatLover42', 'TubGuardian', 'FelineWatcher', 'BathTimeHero', 'WhiskerSentry', 'PurrProtector', 'AquaCat', 'SoapyPaws', 'BubbleKnight', 'SplashGuard'];
-        const randomUser = randomUsers[Math.floor(Math.random() * randomUsers.length)];
-        const randomTime = Math.floor(Math.random() * 7200) + 30; // Random time between 30 seconds and 2 hours
-        
-        entries.push({
-          id: `sim-${randomUser}-${Date.now()}`,
-          name: `${randomUser}${Math.floor(Math.random() * 999)}`,
-          time: randomTime,
-          date: new Date().toLocaleDateString()
-        });
-      }
       
       // Update existing entry for this user or add new one
       const existingIndex = entries.findIndex((e: any) => e.name === username);
@@ -79,12 +65,12 @@ const CatInTub = () => {
         entries.push(entry);
       }
 
-      // Sort by time (highest first) and keep top 1000
+      // Sort by time (highest first) and keep top 2000
       const sortedEntries = entries
         .sort((a: any, b: any) => b.time - a.time)
-        .slice(0, 1000);
+        .slice(0, 2000);
 
-      localStorage.setItem('catInTubLeaderboard', JSON.stringify(sortedEntries));
+      localStorage.setItem('globalCatInTubLeaderboard', JSON.stringify(sortedEntries));
     }, 5000); // Auto-save every 5 seconds
 
     return () => clearInterval(autoSaveInterval);
@@ -131,13 +117,13 @@ const CatInTub = () => {
         </div>
       </div>
 
-      {/* Leaderboard button */}
+      {/* Leaderboard button with enhanced animation */}
       <Button
         onClick={() => setShowLeaderboard(true)}
-        className="absolute top-6 right-6 z-20 bg-white/80 hover:bg-white/90 text-slate-700 backdrop-blur-md border border-slate-200 shadow-lg"
+        className="absolute top-6 right-6 z-20 bg-white/90 hover:bg-white text-slate-700 backdrop-blur-md border border-slate-200 shadow-xl rounded-2xl transition-all duration-300 hover:scale-105 hover:shadow-2xl"
         size="lg"
       >
-        <Trophy className="w-5 h-5 mr-2" />
+        <Trophy className="w-5 h-5 mr-2 text-yellow-600" />
         Leaderboard
       </Button>
 
@@ -229,7 +215,7 @@ const CatInTub = () => {
         />
       )}
 
-      {/* Leaderboard Modal */}
+      {/* Leaderboard Modal with enhanced animations */}
       {showLeaderboard && (
         <Leaderboard
           isOpen={showLeaderboard}

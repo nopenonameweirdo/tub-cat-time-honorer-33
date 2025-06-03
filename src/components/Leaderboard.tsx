@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Trophy, Medal, Award, Users, Wifi, Search } from 'lucide-react';
+import { Trophy, Medal, Award, Users, Wifi, Search, X } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 
 interface LeaderboardEntry {
@@ -33,21 +33,52 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
   useEffect(() => {
     if (isOpen) {
       loadEntries();
-      // Simulate live updates every 2 seconds for better real-time feel
-      const interval = setInterval(loadEntries, 2000);
+      // Simulate live updates every 3 seconds for better real-time feel
+      const interval = setInterval(loadEntries, 3000);
       return () => clearInterval(interval);
     }
   }, [isOpen]);
 
   const loadEntries = () => {
-    // Simulate network connection with 98% uptime
-    setIsConnected(Math.random() > 0.02);
+    // Simulate network connection with 99% uptime
+    setIsConnected(Math.random() > 0.01);
     
-    const savedEntries = localStorage.getItem('catInTubLeaderboard');
-    if (savedEntries) {
-      const parsedEntries = JSON.parse(savedEntries);
-      setEntries(parsedEntries.sort((a: LeaderboardEntry, b: LeaderboardEntry) => b.time - a.time));
+    // Load from shared simulation storage
+    const savedEntries = localStorage.getItem('globalCatInTubLeaderboard');
+    let entries = savedEntries ? JSON.parse(savedEntries) : [];
+    
+    // Enhanced simulation - add more realistic users periodically
+    if (Math.random() < 0.25 && entries.length < 2000) {
+      const userPool = [
+        'CatWhisperer', 'TubGuardian', 'FelineWatcher', 'BathTimeHero', 'WhiskerSentry', 
+        'PurrProtector', 'AquaCat', 'SoapyPaws', 'BubbleKnight', 'SplashGuard',
+        'WaterCat', 'TubMaster', 'CatSitter', 'FelineHonorer', 'BathBuddy',
+        'CatLover', 'TubWatcher', 'SoapGuard', 'BubbleCat', 'AquaHonorer'
+      ];
+      
+      const randomUser = userPool[Math.floor(Math.random() * userPool.length)];
+      const randomTime = Math.floor(Math.random() * 10800) + 15; // 15 seconds to 3 hours
+      const uniqueId = Math.floor(Math.random() * 10000);
+      
+      const newEntry = {
+        id: `sim-${randomUser}-${uniqueId}-${Date.now()}`,
+        name: `${randomUser}${uniqueId}`,
+        time: randomTime,
+        date: new Date().toLocaleDateString()
+      };
+      
+      entries.push(newEntry);
+      
+      // Sort and save back
+      const sortedEntries = entries
+        .sort((a: LeaderboardEntry, b: LeaderboardEntry) => b.time - a.time)
+        .slice(0, 2000);
+      
+      localStorage.setItem('globalCatInTubLeaderboard', JSON.stringify(sortedEntries));
+      entries = sortedEntries;
     }
+    
+    setEntries(entries.sort((a: LeaderboardEntry, b: LeaderboardEntry) => b.time - a.time));
   };
 
   const formatTime = (totalSeconds: number) => {
@@ -57,19 +88,19 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
   const getRankIcon = (index: number) => {
     switch (index) {
       case 0:
-        return <Trophy className="w-5 h-5 text-yellow-500" />;
+        return <Trophy className="w-6 h-6 text-yellow-500" />;
       case 1:
-        return <Medal className="w-5 h-5 text-gray-400" />;
+        return <Medal className="w-6 h-6 text-gray-400" />;
       case 2:
-        return <Award className="w-5 h-5 text-amber-600" />;
+        return <Award className="w-6 h-6 text-amber-600" />;
       default:
-        return <span className="w-5 h-5 flex items-center justify-center text-sm font-bold text-cyan-700">{index + 1}</span>;
+        return <span className="w-6 h-6 flex items-center justify-center text-sm font-bold text-cyan-700">{index + 1}</span>;
     }
   };
 
   const clearLeaderboard = () => {
     setEntries([]);
-    localStorage.removeItem('catInTubLeaderboard');
+    localStorage.removeItem('globalCatInTubLeaderboard');
   };
 
   // Filter entries based on search term
@@ -87,86 +118,104 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto bg-gradient-to-br from-cyan-50/98 to-blue-50/98 backdrop-blur-xl border border-cyan-200/60 shadow-2xl rounded-2xl">
-        <DialogHeader>
-          <DialogTitle className="text-2xl font-bold text-cyan-900 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Trophy className="w-6 h-6" />
+      <DialogContent className="max-w-6xl max-h-[95vh] overflow-y-auto bg-gradient-to-br from-slate-50/95 to-blue-50/95 backdrop-blur-xl border border-slate-200/60 shadow-2xl rounded-3xl animate-scale-in">
+        {/* Custom close button */}
+        <button
+          onClick={onClose}
+          className="absolute right-6 top-6 z-10 rounded-full p-2 bg-white/80 hover:bg-white/90 shadow-lg transition-all duration-200 hover:scale-110"
+        >
+          <X className="w-5 h-5 text-slate-600" />
+        </button>
+
+        <DialogHeader className="pb-6">
+          <DialogTitle className="text-3xl font-bold text-transparent bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="p-3 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-2xl shadow-lg">
+                <Trophy className="w-8 h-8 text-white" />
+              </div>
               Global Honoring Leaderboard
             </div>
-            <div className="flex items-center gap-2 text-sm">
-              <Wifi className={`w-4 h-4 ${isConnected ? 'text-green-500' : 'text-red-500'}`} />
-              <span className={isConnected ? 'text-green-600' : 'text-red-600'}>
-                {isConnected ? 'Live' : 'Offline'}
-              </span>
+            <div className="flex items-center gap-3 text-sm font-normal">
+              <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full ${
+                isConnected ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+              }`}>
+                <Wifi className={`w-4 h-4 ${isConnected ? 'text-green-500' : 'text-red-500'}`} />
+                <span className="font-medium">
+                  {isConnected ? 'Live' : 'Offline'}
+                </span>
+              </div>
             </div>
           </DialogTitle>
         </DialogHeader>
 
         {/* Current User Stats */}
         {currentUser && currentUserEntry && (
-          <div className="mb-4 p-4 bg-gradient-to-r from-cyan-100/80 to-blue-100/80 rounded-xl border border-cyan-300/50">
-            <h3 className="font-semibold text-cyan-900 mb-2 flex items-center gap-2">
-              <Users className="w-4 h-4" />
-              Your Honoring Stats
+          <div className="mb-6 p-6 bg-gradient-to-r from-blue-50/80 to-cyan-50/80 rounded-2xl border border-blue-200/50 shadow-sm animate-fade-in">
+            <h3 className="font-bold text-blue-900 mb-4 flex items-center gap-3 text-lg">
+              <div className="p-2 bg-blue-100 rounded-xl">
+                <Users className="w-5 h-5 text-blue-600" />
+              </div>
+              Your Honoring Journey
             </h3>
-            <div className="grid grid-cols-3 gap-4 text-center">
-              <div>
-                <p className="text-xl font-bold text-cyan-800">{currentUserRank}</p>
-                <p className="text-xs text-cyan-600">Rank</p>
+            <div className="grid grid-cols-3 gap-6 text-center">
+              <div className="p-4 bg-white/60 rounded-xl border border-blue-200/30">
+                <p className="text-2xl font-bold text-blue-800">#{currentUserRank}</p>
+                <p className="text-sm text-blue-600 font-medium">Global Rank</p>
               </div>
-              <div>
-                <p className="text-xl font-bold text-cyan-800 font-mono">{formatTime(currentUserEntry.time)}</p>
-                <p className="text-xs text-cyan-600">Best Time</p>
+              <div className="p-4 bg-white/60 rounded-xl border border-blue-200/30">
+                <p className="text-2xl font-bold text-blue-800 font-mono">{formatTime(currentUserEntry.time)}</p>
+                <p className="text-sm text-blue-600 font-medium">Best Time</p>
               </div>
-              <div>
-                <p className="text-xl font-bold text-cyan-800">{entries.length}</p>
-                <p className="text-xs text-cyan-600">Total Honorers</p>
+              <div className="p-4 bg-white/60 rounded-xl border border-blue-200/30">
+                <p className="text-2xl font-bold text-blue-800">{entries.length.toLocaleString()}</p>
+                <p className="text-sm text-blue-600 font-medium">Total Honorers</p>
               </div>
             </div>
           </div>
         )}
 
-        <div className="space-y-4">
+        <div className="space-y-6">
           {/* Search and controls */}
           <div className="flex justify-between items-center gap-4">
-            <div className="relative flex-1 max-w-xs">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-cyan-500 w-4 h-4" />
+            <div className="relative flex-1 max-w-md">
+              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5" />
               <Input
                 placeholder="Search honorers..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 border-cyan-200 focus:border-cyan-400"
+                className="pl-12 h-12 border-slate-200 focus:border-blue-400 rounded-xl bg-white/80 backdrop-blur-sm"
               />
             </div>
             {entries.length > 0 && (
               <Button 
                 onClick={clearLeaderboard}
                 variant="outline"
-                size="sm"
-                className="text-red-600 hover:text-red-700 border-red-300"
+                size="lg"
+                className="text-red-600 hover:text-red-700 border-red-300 hover:border-red-400 rounded-xl px-6"
               >
-                Reset
+                Reset Board
               </Button>
             )}
           </div>
 
           {entries.length === 0 ? (
-            <div className="text-center py-8 text-cyan-700">
-              <Trophy className="w-12 h-12 mx-auto mb-4 opacity-50" />
-              <p className="text-lg">No honorers recorded yet.</p>
-              <p className="text-sm opacity-75">Start honoring to become the first!</p>
+            <div className="text-center py-16 text-slate-600 animate-fade-in">
+              <div className="p-6 bg-slate-50/80 rounded-3xl inline-block mb-6">
+                <Trophy className="w-16 h-16 mx-auto text-slate-400" />
+              </div>
+              <h3 className="text-2xl font-bold text-slate-700 mb-2">No honorers yet</h3>
+              <p className="text-lg">Start honoring to become the first!</p>
             </div>
           ) : (
             <>
-              <div className="rounded-xl border border-cyan-200/60 overflow-hidden shadow-lg bg-white/80">
+              <div className="rounded-2xl border border-slate-200/60 overflow-hidden shadow-xl bg-white/90 backdrop-blur-sm animate-slide-in-right">
                 <Table>
                   <TableHeader>
-                    <TableRow className="bg-gradient-to-r from-cyan-200/80 to-blue-200/80">
-                      <TableHead className="w-16 text-center font-bold text-cyan-900">Rank</TableHead>
-                      <TableHead className="font-bold text-cyan-900">Honorer</TableHead>
-                      <TableHead className="font-bold text-cyan-900">Time (Seconds)</TableHead>
-                      <TableHead className="font-bold text-cyan-900">Date</TableHead>
+                    <TableRow className="bg-gradient-to-r from-slate-100/80 to-blue-100/80 border-b-2 border-slate-200">
+                      <TableHead className="w-20 text-center font-bold text-slate-700 py-4">Rank</TableHead>
+                      <TableHead className="font-bold text-slate-700 py-4">Honorer</TableHead>
+                      <TableHead className="font-bold text-slate-700 py-4">Time (Seconds)</TableHead>
+                      <TableHead className="font-bold text-slate-700 py-4">Date</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -175,23 +224,25 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
                       return (
                         <TableRow 
                           key={entry.id} 
-                          className={`hover:bg-cyan-50/50 transition-colors ${
-                            entry.name === currentUser ? 'bg-cyan-100/70 border-l-4 border-l-cyan-500' : ''
-                          }`}
+                          className={`hover:bg-blue-50/50 transition-all duration-200 border-b border-slate-100 ${
+                            entry.name === currentUser ? 'bg-blue-100/70 border-l-4 border-l-blue-500 shadow-sm' : ''
+                          } ${actualRank < 3 ? 'bg-gradient-to-r from-yellow-50/30 to-orange-50/30' : ''}`}
                         >
-                          <TableCell className="flex items-center justify-center py-3">
+                          <TableCell className="flex items-center justify-center py-4">
                             {getRankIcon(actualRank)}
                           </TableCell>
-                          <TableCell className="font-medium text-cyan-800">
-                            {entry.name}
-                            {entry.name === currentUser && (
-                              <span className="ml-2 text-xs bg-cyan-600 text-white px-2 py-1 rounded-full">You</span>
-                            )}
+                          <TableCell className="font-semibold text-slate-800 py-4">
+                            <div className="flex items-center gap-3">
+                              <span>{entry.name}</span>
+                              {entry.name === currentUser && (
+                                <span className="text-xs bg-blue-600 text-white px-3 py-1 rounded-full font-medium">You</span>
+                              )}
+                            </div>
                           </TableCell>
-                          <TableCell className="font-mono text-lg font-bold text-cyan-700">
+                          <TableCell className="font-mono text-xl font-bold text-blue-700 py-4">
                             {formatTime(entry.time)}
                           </TableCell>
-                          <TableCell className="text-cyan-600 text-sm">{entry.date}</TableCell>
+                          <TableCell className="text-slate-600 py-4">{entry.date}</TableCell>
                         </TableRow>
                       );
                     })}
@@ -201,23 +252,25 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
 
               {/* Pagination */}
               {totalPages > 1 && (
-                <div className="flex justify-center items-center gap-2 mt-4">
+                <div className="flex justify-center items-center gap-3 mt-6">
                   <Button
                     onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
                     disabled={currentPage === 1}
                     variant="outline"
-                    size="sm"
+                    size="lg"
+                    className="rounded-xl px-6"
                   >
                     Previous
                   </Button>
-                  <span className="text-sm text-cyan-700 px-3">
+                  <span className="text-slate-700 px-4 py-2 bg-slate-100 rounded-xl font-medium">
                     Page {currentPage} of {totalPages}
                   </span>
                   <Button
                     onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
                     disabled={currentPage === totalPages}
                     variant="outline"
-                    size="sm"
+                    size="lg"
+                    className="rounded-xl px-6"
                   >
                     Next
                   </Button>
@@ -227,9 +280,9 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
           )}
         </div>
 
-        <div className="text-center text-xs text-cyan-600 mt-4 p-3 bg-cyan-50/50 rounded-lg">
-          <p className="font-medium">🐱 Live multiplayer cat honoring leaderboard 🐱</p>
-          <p className="text-xs mt-1 opacity-75">Auto-saves every 5s • Live updates every 2s • Showing up to 1000 honorers</p>
+        <div className="text-center text-sm text-slate-600 mt-6 p-4 bg-slate-50/50 rounded-2xl border border-slate-200/50">
+          <p className="font-medium text-base mb-1">🐱 Live Global Cat Honoring Network 🐱</p>
+          <p className="text-xs opacity-75">Auto-saves every 5s • Live updates every 3s • Showing up to 2000 honorers worldwide</p>
         </div>
       </DialogContent>
     </Dialog>
